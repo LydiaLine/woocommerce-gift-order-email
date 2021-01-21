@@ -1,6 +1,7 @@
-woocommerce-expedited-order-email
+Woocommerce Gift Order Email
 =================================
 
-A demo plugin for creating a custom WooCommerce email.
+This is a Wordpress plugin for creating a custom WooCommerce gift email.
 
-Plugin Explanation: http://www.skyverge.com/blog/how-to-add-a-custom-woocommerce-email/
+This plugin is based off of this explanation: http://www.skyverge.com/blog/how-to-add-a-custom-woocommerce-email/
+It is adapted to work with Checkout Field Editor for Woocommerce by ThemeHigh. 
