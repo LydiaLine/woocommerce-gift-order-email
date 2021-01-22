@@ -88,7 +88,7 @@ class WC_Gift_Order_Email extends WC_Email {
 			return;
 
 		// woohoo, send the email!
-		$this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), $this->get_headers(), $this->get_attachments() );
+		$this->send( $email, $this->get_subject(), $this->get_content(), $this->get_headers(), $this->get_attachments() );
 	}
 
 
