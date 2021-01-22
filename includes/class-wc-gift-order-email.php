@@ -67,7 +67,14 @@ class WC_Gift_Order_Email extends WC_Email {
 		$this->object = new WC_Order( $order_id );
 
 		// bail if shipping method is not expedited
-		if ( ! in_array( $this->object->get_shipping_method(), array( 'Three Day Shipping', 'Next Day Shipping' ) ) )
+		//if ( ! in_array( $this->object->get_shipping_method(), array( 'Three Day Shipping', 'Next Day Shipping' ) ) )
+		//	return;
+
+		// get custom email fields
+		$email = get_post_meta( $order_id, 'shippingemail_', true );
+		
+		// bail if recipient email is not found
+		if (empty($email)) 
 			return;
 
 		// replace variables in the subject/headings
