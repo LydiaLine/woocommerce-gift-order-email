@@ -41,15 +41,62 @@ class WC_Gift_Order_Email extends WC_Email {
 
 		// Call parent constructor to load any other defaults not explicity defined here
 		parent::__construct();
-
-		// this sets the recipient to the settings defined below in init_form_fields()
-		$this->recipient = $this->get_option( 'recipient' );
-
-		// if none was entered, just use the WP admin email as a fallback
-		if ( ! $this->recipient )
-			$this->recipient = get_option( 'admin_email' );
 	}
-
+	
+	/**
+	Validate an email address.
+	Provide email address (raw input)
+	Returns true if the email address has the email 
+	address format and the domain exists.
+	Function taken from the following website:
+	https://www.linuxjournal.com/article/9585
+	*/
+	function validEmail($email) {
+	   $isValid = true;
+	   $atIndex = strrpos($email, "@");
+	   if (is_bool($atIndex) && !$atIndex) {
+	      $isValid = false;
+	   }
+	   else {
+	      $domain = substr($email, $atIndex+1);
+	      $local = substr($email, 0, $atIndex);
+	      $localLen = strlen($local);
+	      $domainLen = strlen($domain);
+	      if ($localLen < 1 || $localLen > 64) {
+		 // local part length exceeded
+		 $isValid = false;
+	      } else if ($domainLen < 1 || $domainLen > 255) {
+		 // domain part length exceeded
+		 $isValid = false;
+	      } else if ($local[0] == '.' || $local[$localLen-1] == '.') {
+		 // local part starts or ends with '.'
+		 $isValid = false;
+	      } else if (preg_match('/\\.\\./', $local)) {
+		 // local part has two consecutive dots
+		 $isValid = false;
+	      } else if (!preg_match('/^[A-Za-z0-9\\-\\.]+$/', $domain)) {
+		 // character not valid in domain part
+		 $isValid = false;
+	      } else if (preg_match('/\\.\\./', $domain)) {
+		 // domain part has two consecutive dots
+		 $isValid = false;
+	      } else if (!preg_match('/^(\\\\.|[A-Za-z0-9!#%&`_=\\/$\'*+?^{}|~.-])+$/',
+			 str_replace("\\\\","",$local))) {
+		 // character not valid in local part unless 
+		 // local part is quoted
+		 if (!preg_match('/^"(\\\\"|[^"])+"$/',
+		     str_replace("\\\\","",$local))) {
+		    $isValid = false;
+		 }
+	      }
+// Not including DNS check currently
+// 	      if ($isValid && !(checkdnsrr($domain,"MX") || checkdnsrr($domain,"A"))) {
+// 		 // domain not found in DNS
+// 		 $isValid = false;
+// 	      }
+	   }
+	   return $isValid;
+	}
 
 	/**
 	 * Determine if the email should actually be sent and setup email merge variables
@@ -73,9 +120,14 @@ class WC_Gift_Order_Email extends WC_Email {
 		// get custom email fields
 		$email = get_post_meta( $order_id, 'shippingemail_', true );
 		
-		// bail if recipient email is not found
-		if (empty($email)) 
+		// bail if recipient email is not found or valid
+		if ( empty($email) ) {
 			return;
+		} else {
+			if ( !(validEmail($email)) ) {
+				return;
+			}
+		}
 
 		// replace variables in the subject/headings
 		$this->find[] = '{order_date}';
@@ -84,7 +136,7 @@ class WC_Gift_Order_Email extends WC_Email {
 		$this->find[] = '{order_number}';
 		$this->replace[] = $this->object->get_order_number();
 
-		if ( ! $this->is_enabled() || ! $this->get_recipient() )
+		if ( ! $this->is_enabled() )
 			return;
 
 		// woohoo, send the email!
@@ -137,13 +189,6 @@ class WC_Gift_Order_Email extends WC_Email {
 				'type'    => 'checkbox',
 				'label'   => 'Enable this email notification',
 				'default' => 'yes'
-			),
-			'recipient'  => array(
-				'title'       => 'Recipient(s)',
-				'type'        => 'text',
-				'description' => sprintf( 'Enter recipients (comma separated) for this email. Defaults to <code>%s</code>.', esc_attr( get_option( 'admin_email' ) ) ),
-				'placeholder' => '',
-				'default'     => ''
 			),
 			'subject'    => array(
 				'title'       => 'Subject',
