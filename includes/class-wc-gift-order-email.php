@@ -51,7 +51,7 @@ class WC_Gift_Order_Email extends WC_Email {
 	Function taken from the following website:
 	https://www.linuxjournal.com/article/9585
 	*/
-	function validEmail($email) {
+	public function validEmail($email) {
 	   $isValid = true;
 	   $atIndex = strrpos($email, "@");
 	   if (is_bool($atIndex) && !$atIndex) {
