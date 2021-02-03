@@ -58,10 +58,6 @@ class WC_Gift_Order_Email extends WC_Email {
 		// setup order object
 		$this->object = new WC_Order( $order_id );
 
-		// bail if shipping method is not expedited
-		//if ( ! in_array( $this->object->get_shipping_method(), array( 'Three Day Shipping', 'Next Day Shipping' ) ) )
-		//	return;
-
 		// get custom email fields
 		$email = get_post_meta( $order_id, 'shippingemail_', true );
 		
@@ -135,6 +131,13 @@ class WC_Gift_Order_Email extends WC_Email {
 				'type'    => 'checkbox',
 				'label'   => 'Enable this email notification',
 				'default' => 'yes'
+			),
+			'custom_field'  => array(
+				'title'       => 'Custom Field Name',
+				'type'        => 'text',
+				'description' => sprintf( 'Enter the custom field attribute name for the email. Defaults to <code>%s</code>.', 'shippingemail_' ) ) ),
+				'placeholder' => '',
+				'default'     => ''
 			),
 			'subject'    => array(
 				'title'       => 'Subject',
