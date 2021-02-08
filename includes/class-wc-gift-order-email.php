@@ -37,7 +37,7 @@ class WC_Gift_Order_Email extends WC_Email {
 
 		// Trigger on new paid orders
 		add_action( 'woocommerce_order_status_pending_to_processing_notification', array( $this, 'trigger' ) );
-		add_action( 'woocommerce_order_status_failed_to_processing_notification',  array( $this, 'trigger' ) );
+		add_action( 'woocommerce_order_status_on-hold_to_processing_notification',  array( $this, 'trigger' ) );
 
 		// Call parent constructor to load any other defaults not explicity defined here
 		parent::__construct();
