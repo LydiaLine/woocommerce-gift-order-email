@@ -135,7 +135,7 @@ class WC_Gift_Order_Email extends WC_Email {
 			'custom_field'  => array(
 				'title'       => 'Custom Field Name',
 				'type'        => 'text',
-				'description' => sprintf( 'Enter the custom field attribute name for the email. Defaults to <code>%s</code>.', 'shippingemail_' ) ) ),
+				'description' => sprintf( 'Enter the custom field attribute name for the email. Defaults to <code>%s</code>.', 'shippingemail_'),
 				'placeholder' => '',
 				'default'     => ''
 			),
