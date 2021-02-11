@@ -59,7 +59,11 @@ class WC_Gift_Order_Email extends WC_Email {
 		$this->object = new WC_Order( $order_id );
 
 		// get custom email fields
-		$email = get_post_meta( $order_id, 'shippingemail_', true );
+		$field = $this->object->get_option('custom_field');
+		if (! $field) {
+			$field = 'shippingemail_';
+		}
+		$email = get_post_meta( $order_id, $field, true );
 		
 		// bail if recipient email is not found or valid
 		if ( empty($email) ) {
