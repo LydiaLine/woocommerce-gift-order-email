@@ -42,10 +42,59 @@ class WC_Gift_Order_Email extends WC_Email {
 		// Call parent constructor to load any other defaults not explicity defined here
 		parent::__construct();
 	}
+	
+	/**
+	 * Adds the contact to Hubspot for marketing purposes
+	 */
+	function create_contact( $order_id ) {
+		/* https://packagist.org/packages/hubspot/api-client */
+		
+		// Gets fields from order form
+		$email = get_post_meta( $order_id, $field, true );
+		$first = get_post_meta( $order_id, '_shipping_first_name', true );
+		$last = get_post_meta( $order_id, '_shipping_last_name', true );
+		$address = get_post_meta( $order_id, '_shipping_address_1', true );
+		$city = get_post_meta( $order_id, '_shipping_city', true );
+		$state = get_post_meta( $order_id, '_shipping_state', true );
+		$zip = get_post_meta( $order_id, '_shipping_postcode', true );
+		
+		// TODO Add fields to create contact request
+
+		$curl = curl_init();
+
+		curl_setopt_array($curl, array(
+			CURLOPT_URL => "https://api.hubapi.com/crm/v3/objects/contacts?hapikey=YOUR_HUBSPOT_API_KEY",
+  			CURLOPT_RETURNTRANSFER => true,
+  			CURLOPT_ENCODING => "",
+  			CURLOPT_MAXREDIRS => 10,
+  			CURLOPT_TIMEOUT => 30,
+  			CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+  			CURLOPT_CUSTOMREQUEST => "POST",
+ 			CURLOPT_POSTFIELDS => "{\"properties\":{\"company\":\"Biglytics\",\"email\":\"bcooper@biglytics.net\",\"firstname\":\"Bryan\",\"lastname\":\"Cooper\",\"phone\":\"(877) 929-0687\",\"website\":\"biglytics.net\"}}",
+  			CURLOPT_HTTPHEADER => array(
+	    			"accept: application/json",
+	      			"content-type: application/json"
+	      		),
+		));
+
+		$response = curl_exec($curl);
+		$err = curl_error($curl);
+
+		curl_close($curl);
+
+		if ($err) {
+			//echo "cURL Error #:" . $err;
+			return false;
+		} else {
+			//echo $response;
+			return true;
+		}		
+	}
+
 
 	/**
 	 * Determine if the email should actually be sent and setup email merge variables
-	 *
+	
 	 * @since 0.1
 	 * @param int $order_id
 	 */
@@ -87,6 +136,9 @@ class WC_Gift_Order_Email extends WC_Email {
 
 		// woohoo, send the email!
 		$this->send( $email, $this->get_subject(), $this->get_content(), $this->get_headers(), $this->get_attachments() );
+
+		// Add contact to HubSpot
+		create_contact( $order_id );
 	}
 
 
