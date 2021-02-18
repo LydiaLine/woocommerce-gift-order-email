@@ -101,12 +101,15 @@ class WC_Gift_Order_Email extends WC_Email {
 		// bail if no order ID is present
 		if ( ! $order_id )
 			return;
-
+		
+		// Gets API from option field
+		$key = get_option('key');
+		// get custom email fields
+		$field = get_option('custom_field');
+		
 		// setup order object
 		$this->object = new WC_Order( $order_id );
-
-		// get custom email fields
-		$field = $this->object->get_option('custom_field');
+		
 		if (! $field) {
 			$field = 'shippingemail_';
 		}
@@ -135,8 +138,6 @@ class WC_Gift_Order_Email extends WC_Email {
 		// woohoo, send the email!
 		$this->send( $email, $this->get_subject(), $this->get_content(), $this->get_headers(), $this->get_attachments() );
 
-		// Gets API from option field
-		$key = $this->object->get_option('key');
 		// Add contact to HubSpot
 		create_contact( $order_id, $key );
 	}
