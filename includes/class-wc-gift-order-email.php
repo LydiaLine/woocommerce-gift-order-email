@@ -57,8 +57,6 @@ class WC_Gift_Order_Email extends WC_Email {
 		$city = get_post_meta( $order_id, '_shipping_city', true );
 		$state = get_post_meta( $order_id, '_shipping_state', true );
 		$zip = get_post_meta( $order_id, '_shipping_postcode', true );
-		
-		// TODO Add fields to create contact request
 
 		$curl = curl_init();
 
@@ -70,7 +68,7 @@ class WC_Gift_Order_Email extends WC_Email {
   			CURLOPT_TIMEOUT => 30,
   			CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
   			CURLOPT_CUSTOMREQUEST => "POST",
- 			CURLOPT_POSTFIELDS => "{\"properties\":{\"company\":\"Biglytics\",\"email\":\"bcooper@biglytics.net\",\"firstname\":\"Bryan\",\"lastname\":\"Cooper\",\"phone\":\"(877) 929-0687\",\"website\":\"biglytics.net\"}}",
+ 			CURLOPT_POSTFIELDS => "{\"properties\":{\"email\":\"$email\",\"firstname\":\"$first\",\"lastname\":\"$last\",\"address\":\"$address\",\"city\":\"$city\",\"state\":\"$state\",\"zip\":\"$zip\"}}",
   			CURLOPT_HTTPHEADER => array(
 	    			"accept: application/json",
 	      			"content-type: application/json"
