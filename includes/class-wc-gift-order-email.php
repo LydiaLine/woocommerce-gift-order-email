@@ -57,11 +57,14 @@ class WC_Gift_Order_Email extends WC_Email {
 		$city = get_post_meta( $order_id, '_shipping_city', true );
 		$state = get_post_meta( $order_id, '_shipping_state', true );
 		$zip = get_post_meta( $order_id, '_shipping_postcode', true );
+		
+		// Gets API from option field
+		$api_key = $this->get_option('key');
 
 		$curl = curl_init();
 
 		curl_setopt_array($curl, array(
-			CURLOPT_URL => "https://api.hubapi.com/crm/v3/objects/contacts?hapikey=YOUR_HUBSPOT_API_KEY",
+			CURLOPT_URL => "https://api.hubapi.com/crm/v3/objects/contacts?hapikey=$api_key",
   			CURLOPT_RETURNTRANSFER => true,
   			CURLOPT_ENCODING => "",
   			CURLOPT_MAXREDIRS => 10,
@@ -190,6 +193,13 @@ class WC_Gift_Order_Email extends WC_Email {
 				'title'       => 'Custom Field Name',
 				'type'        => 'text',
 				'description' => sprintf( 'Enter the custom field attribute name for the email. Defaults to <code>%s</code>.', 'shippingemail_'),
+				'placeholder' => '',
+				'default'     => ''
+			),
+			'key'  => array(
+				'title'       => 'HubSpot API Key',
+				'type'        => 'text',
+				'description' => sprintf( 'Enter the HubSpot API key for the account you want the contact to be added to.'),
 				'placeholder' => '',
 				'default'     => ''
 			),
