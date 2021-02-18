@@ -46,7 +46,7 @@ class WC_Gift_Order_Email extends WC_Email {
 	/**
 	 * Adds the contact to Hubspot for marketing purposes
 	 */
-	function create_contact( $order_id ) {
+	function create_contact( $order_id, $key ) {
 		/* https://packagist.org/packages/hubspot/api-client */
 		
 		// Gets fields from order form
@@ -58,13 +58,10 @@ class WC_Gift_Order_Email extends WC_Email {
 		$state = get_post_meta( $order_id, '_shipping_state', true );
 		$zip = get_post_meta( $order_id, '_shipping_postcode', true );
 		
-		// Gets API from option field
-		$api_key = $this->get_option('key');
-
 		$curl = curl_init();
 
 		curl_setopt_array($curl, array(
-			CURLOPT_URL => "https://api.hubapi.com/crm/v3/objects/contacts?hapikey=$api_key",
+			CURLOPT_URL => "https://api.hubapi.com/crm/v3/objects/contacts?hapikey=$key",
   			CURLOPT_RETURNTRANSFER => true,
   			CURLOPT_ENCODING => "",
   			CURLOPT_MAXREDIRS => 10,
@@ -138,8 +135,10 @@ class WC_Gift_Order_Email extends WC_Email {
 		// woohoo, send the email!
 		$this->send( $email, $this->get_subject(), $this->get_content(), $this->get_headers(), $this->get_attachments() );
 
+		// Gets API from option field
+		$key = $this->object->get_option('key');
 		// Add contact to HubSpot
-		create_contact( $order_id );
+		create_contact( $order_id, $key );
 	}
 
 
