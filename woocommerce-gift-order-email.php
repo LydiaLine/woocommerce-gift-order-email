@@ -21,6 +21,9 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
  * @return array filtered available email classes
  */
 function add_gift_order_woocommerce_email( $email_classes ) {
+	
+	// Defines a path for the templates to be used
+  	define( 'GIFT_TEMPLATE_PATH', untrailingslashit( plugin_dir_path( __FILE__ ) ) . '/templates/' );
 
 	// include our custom email class
 	require_once( 'includes/class-wc-gift-order-email.php' );
