@@ -9,6 +9,6 @@ It is adapted to work with Checkout Field Editor for Woocommerce by ThemeHigh.
 
 ### In Development:
 
-- [ ] Add integration with HubSpot API to add a contact lead
+- [X] Add integration with HubSpot API to add a contact lead
 - [ ] Add options from Email settings to change triggers for email
-- [ ] Add option in Email settings to change the custom field attribute name
+- [X] Add option in Email settings to change the custom field attribute name
