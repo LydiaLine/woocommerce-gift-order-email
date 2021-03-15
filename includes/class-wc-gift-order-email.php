@@ -31,11 +31,13 @@ class WC_Gift_Order_Email extends WC_Email {
 		$this->heading = 'Gift Order';
 		$this->subject = 'Gift Order';
 
-		// these define the locations of the templates that this email should use, we'll just use the new order template since this email is similar
-		$this->template_html  = 'emails/admin-new-order.php';
-		$this->template_plain = 'emails/plain/admin-new-order.php';
+		// these define the locations of the templates that this email should use
+    $this->template_base = GIFT_TEMPLATE_PATH;
+		$this->template_html  = 'emails/admin-gift-order.php';
+		$this->template_plain = 'emails/plain/admin-gift-order.php';
 
-		// Trigger on on-hold to processing orders - change to whatever you would like
+		// Trigger on new paid orders
+		add_action( 'woocommerce_order_status_pending_to_processing_notification', array( $this, 'trigger' ) );
 		add_action( 'woocommerce_order_status_on-hold_to_processing_notification',  array( $this, 'trigger' ) );
 
 		// Call parent constructor to load any other defaults not explicity defined here
@@ -152,7 +154,10 @@ class WC_Gift_Order_Email extends WC_Email {
 		woocommerce_get_template( $this->template_html, array(
 			'order'         => $this->object,
 			'email_heading' => $this->get_heading()
-		) );
+		), 
+    'gift-order/',
+    $this->template_base
+    );
 		return ob_get_clean();
 	}
 
@@ -168,7 +173,10 @@ class WC_Gift_Order_Email extends WC_Email {
 		woocommerce_get_template( $this->template_plain, array(
 			'order'         => $this->object,
 			'email_heading' => $this->get_heading()
-		) );
+		),
+      'gift-order/',
+      $this->template_base
+      );
 		return ob_get_clean();
 	}
 
