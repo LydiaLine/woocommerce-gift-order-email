@@ -22,6 +22,11 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
  */
 function add_gift_order_woocommerce_email( $email_classes ) {
 	
+	// For email customization (comment out if you have WP HTML Mail, this is 
+	// requiring some custom code thats not in the main plugin)
+    	if(is_plugin_active( 'wp-html-mail-woocommerce/wp-html-mail-woocommerce.php' ))
+        	require WP_PLUGIN_DIR . '/wp-html-mail-woocommerce/includes/class-addon-gift-order-email.php';
+	
 	// Defines a path for the templates to be used
   	define( 'GIFT_TEMPLATE_PATH', untrailingslashit( plugin_dir_path( __FILE__ ) ) . '/templates/' );
 
