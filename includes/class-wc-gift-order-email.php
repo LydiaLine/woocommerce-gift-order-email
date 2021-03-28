@@ -27,10 +27,6 @@ class WC_Gift_Order_Email extends WC_Email {
 		// this is the description in WooCommerce email settings
 		$this->description = 'Gift Order Notification emails are sent when a customer places an order that has a gift recipient.';
 
-		// these are the default heading and subject lines that can be overridden using the settings
-		$this->heading = 'Gift Order';
-		$this->subject = 'Gift Order';
-
 		// these define the locations of the templates that this email should use
     $this->template_base = GIFT_TEMPLATE_PATH;
 		$this->template_html  = 'emails/admin-gift-order.php';
@@ -125,13 +121,6 @@ class WC_Gift_Order_Email extends WC_Email {
 			}
 		}
 
-		// replace variables in the subject/headings
-		$this->find[] = '{order_date}';
-		$this->replace[] = date_i18n( woocommerce_date_format(), strtotime( $this->object->order_date ) );
-
-		$this->find[] = '{order_number}';
-		$this->replace[] = $this->object->get_order_number();
-
 		if ( ! $this->is_enabled() )
 			return;
 
@@ -180,6 +169,15 @@ class WC_Gift_Order_Email extends WC_Email {
 		return ob_get_clean();
 	}
 
+    /**
+     * Get email subject.
+     *
+     * @return string
+     */
+    public function get_default_subject() {
+        return __( 'Gift Order', 'woocommerce' );
+    }
+
 
 	/**
 	 * Initialize Settings Form Fields
@@ -212,8 +210,8 @@ class WC_Gift_Order_Email extends WC_Email {
 			'subject'    => array(
 				'title'       => 'Subject',
 				'type'        => 'text',
-				'description' => sprintf( 'This controls the email subject line. Leave blank to use the default subject: <code>%s</code>.', $this->subject ),
-				'placeholder' => '',
+				'description' => sprintf( 'This controls the email subject line. Leave blank to use the default subject: <code>%s</code>.', $this->get_default_subject() ),
+				'placeholder' => $this->get_default_subject(),
 				'default'     => ''
 			),
 			'heading'    => array(
